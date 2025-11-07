@@ -26,12 +26,17 @@ def convert_color_space(img, space='YUV'):
         return cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
 
 def cluster_colors(img, k=4):
+    # 将图像展开为二维数组 (N, 3)
     data = img.reshape((-1, 3))
     data = np.float32(data)
-    kmeans = KMeans(n_clusters=k, n_init=10)
+    # 执行KMeans聚类
+    kmeans = KMeans(n_clusters=k, n_init=10, random_state=42)
     labels = kmeans.fit_predict(data)
+    # 将聚类中心的颜色还原到图像形状
     segmented = kmeans.cluster_centers_[labels].reshape(img.shape).astype(np.uint8)
-    return segmented
+    # 返回聚类后的图像和标签矩阵
+    labels = labels.reshape(img.shape[:2])
+    return segmented, labels
 
 def binarize_image(img):
     y_channel = img[:, :, 0]
@@ -46,3 +51,4 @@ def morphological_refine(binary_img):
     kernel = np.ones((3, 3), np.uint8)
     closed = cv2.morphologyEx(binary_img, cv2.MORPH_CLOSE, kernel, iterations=2)
     return closed
+

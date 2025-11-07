@@ -6,4 +6,5 @@ import numpy as np
 IN_PUTIMAGE = "./data/DBY3.png"
 
 image = cv2.imread(IN_PUTIMAGE)
-print("原图像尺寸:", image.shape)
+pixel = image[500, 800]
+print(f"像素值:[B={pixel[0]}, G={pixel[1]}, R={pixel[2]}]")

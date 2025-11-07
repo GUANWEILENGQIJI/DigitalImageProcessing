@@ -29,7 +29,7 @@ def colordivide(image_dir):
         image_colorconv = convert_color_space(image_denoise,space='HSV')
         autoshow(image_colorconv)
         #聚类（红、蓝、黑、白分类）
-        img_clustered = cluster_colors(image_colorconv, k=4)
+        img_clustered, labels = cluster_colors(image_colorconv, k=4)
         autoshow(img_clustered)
         #连通域提取,阈值（二值化亮度区分文字）
         binary = binarize_image(img_clustered)
@@ -39,7 +39,10 @@ def colordivide(image_dir):
         refined = morphological_refine(binary)
         autoshow(refined)
     #分层（每种颜色单独成图）
-    
+        for i in range(1, 4):  # 假设有3个前景颜色类别
+            layer = np.zeros_like(image)
+            layer[labels == i] = image[labels == i]
+            autoshow(layer)
     #输出结果：
 
 
